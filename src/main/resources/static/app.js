@@ -1,6 +1,6 @@
 import { FilesetResolver, PoseLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
 const $ = id => document.getElementById(id);
-let stream, landmarker, socket, loopId, startedAt, sessionTimer, breakTimer, breakSeconds=1200, lastBreak=1200, alertCooldown=0;
+let stream, landmarker, socket, loopId, startedAt, sessionTimer, breakTimer, breakSeconds=1200, lastBreak=1200, alertCooldown=0, deferredInstallPrompt;
 const video=$('video'), canvas=$('overlay'), ctx=canvas.getContext('2d');
 function toast(message){$('toast').textContent=message;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2800)}
 function setConnection(on){$('connection').textContent=on?'Connected':'Offline';document.querySelector('.live-dot').classList.toggle('active',on)}
@@ -17,3 +17,35 @@ function tickBreak(){breakSeconds--;if(breakSeconds<=0){breakSeconds=Number($('i
 $('startBtn').onclick=start;$('stopBtn').onclick=stop;$('breakBtn').onclick=()=>{breakSeconds=Number($('interval').value)*60;$('breakClock').textContent=fmt(breakSeconds);toast('Break timer reset.')};$('interval').onchange=()=>{$('breakBtn').click()};breakTimer=setInterval(tickBreak,1000);$('settingsBtn').onclick=()=>{$('interval').focus();toast('Adjust your reminder preferences below.')};
 window.addEventListener('beforeunload',stop);
 fetch('/api/health').then(r=>r.json()).then(d=>console.info('ErgoGuard API:',d)).catch(()=>toast('Backend connection unavailable.'));
+
+// Progressive Web App installation support.
+const installButton = $('installBtn');
+const isAppleMobile = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+if (installButton && isAppleMobile && !isStandalone) installButton.hidden = false;
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  if (installButton) installButton.hidden = false;
+});
+if (installButton) installButton.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) {
+    toast(/iphone|ipad|ipod/i.test(navigator.userAgent)
+      ? 'To install: tap Share in Safari, then Add to Home Screen.'
+      : 'Use your browser menu and choose Install app or Add to Home Screen.');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+});
+window.addEventListener('appinstalled', () => {
+  if (installButton) installButton.hidden = true;
+  toast('ErgoGuard AI has been installed.');
+});
+if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js').catch(error => console.error('PWA service worker registration failed:', error));
+  });
+}

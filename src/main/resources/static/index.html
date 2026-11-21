@@ -2,9 +2,16 @@
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ErgoGuard AI — Your desk wellness companion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#182722">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ErgoGuard AI">
 <link rel="stylesheet" href="/styles.css"></head>
 <body><div class="shell">
-<header><a class="brand" href="#"><span class="brand-mark">✳</span><span>ergo<span class="mint">guard</span><small>AI WELLNESS COACH</small></span></a><div class="header-right"><span class="live-dot"></span><span id="connection">Offline</span><button class="icon-btn" id="settingsBtn" title="Settings">⚙</button></div></header>
+<header><a class="brand" href="#"><span class="brand-mark">✳</span><span>ergo<span class="mint">guard</span><small>AI WELLNESS COACH</small></span></a><div class="header-right"><span class="live-dot"></span><span id="connection">Offline</span><button class="install-btn" id="installBtn" hidden>Install app</button><button class="icon-btn" id="settingsBtn" title="Settings">⚙</button></div></header>
 <main><section class="hero"><div><div class="eyebrow">YOUR PERSONAL WORKSPACE COMPANION</div><h1>Feel better.<br><em>Work smarter.</em></h1><p class="sub">A little awareness goes a long way. Let's make your desk a healthier place to be.</p></div><div class="hero-orb"><div class="orb-inner">✳</div><span class="orb-label">YOUR DAILY<br>WELLNESS CHECK-IN</span></div></section>
 <section class="toolbar"><div><span class="section-kicker">LIVE SESSION</span><h2>Your posture, in the moment</h2></div><div class="session-actions"><span class="session-time" id="sessionTime">00:00</span><button id="startBtn" class="primary">Start session <span>↗</span></button><button id="stopBtn" class="secondary" disabled>Stop</button></div></section>
 <section class="dashboard">
